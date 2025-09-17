@@ -1,0 +1,11 @@
+fastapi
+sqlalchemy
+pydantic
+uvicorn
+tweepy
+openai
+python-dotenv
+redis
+cffi
+clerk-backend-api
+apscheduler

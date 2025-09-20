@@ -1,4 +1,4 @@
-# 📱 Social Media Managing Prototype
+# 📱 Social Media Manager 
 
 This Social Media Managing prototype is designed to **convert raw user text into AI-generated captions specifically for X (Twitter)**.  
 It also supports uploading user media content and automates the posting process based on the user’s scheduled time.

@@ -1,6 +1,6 @@
-# 📱 Social Media Manager 
+# 📱 Social Media Business maketer
 
-This Social Media Managing prototype is designed to **convert raw user text into AI-generated captions specifically for X (Twitter)**.  
+This app helps user promote their business by using their business information to generate social media content for the user. It is designed to **convert raw user text into AI-generated captions specifically for X (Twitter)**.  
 It also supports uploading user media content and automates the posting process based on the user’s scheduled time.
 
 ---

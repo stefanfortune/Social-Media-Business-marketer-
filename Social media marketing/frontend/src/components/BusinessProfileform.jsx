@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useApi } from '../utils/api';
+import './SocialMediaManager.css';
 
-//Form to create or edit a business profile, A JSX element containing a form to create or edit a business profile.
+// Form to create or edit a business profile, A JSX element containing a form to create or edit a business profile.
 export default function BusinessProfileForm() {
   const [formData, setFormData] = useState({
     business_name: '',
@@ -18,7 +19,7 @@ export default function BusinessProfileForm() {
     fetchProfile();
   }, []);
 
-//Fetch the business profile data. Returns A promise that resolves once the request is completed.
+  // Fetch the business profile data. Returns A promise that resolves once the request is completed.
   const fetchProfile = async () => {
     try {
       const data = await makeRequest('business-profile');
@@ -28,7 +29,7 @@ export default function BusinessProfileForm() {
     }
   };
 
-//Submits the form data to create or edit a business profile.
+  // Submits the form data to create or edit a business profile.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -52,10 +53,10 @@ export default function BusinessProfileForm() {
   };
 
   return (
-    <div className="business-profile-form">
-      <h2>Business Profile Form</h2>
+    <div className="component-container">
+      <h2>Business Profile</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label htmlFor="business_name">Business Name</label>
           <input
@@ -65,6 +66,7 @@ export default function BusinessProfileForm() {
             value={formData.business_name}
             onChange={handleInputChange}
             required
+            className="input-field"
           />
         </div>
 
@@ -76,6 +78,7 @@ export default function BusinessProfileForm() {
             value={formData.description}
             onChange={handleInputChange}
             required
+            className="textarea-field"
           />
         </div>
 
@@ -87,6 +90,7 @@ export default function BusinessProfileForm() {
             name="website"
             value={formData.website}
             onChange={handleInputChange}
+            className="input-field"
           />
         </div>
 
@@ -97,6 +101,7 @@ export default function BusinessProfileForm() {
             name="tone"
             value={formData.tone}
             onChange={handleInputChange}
+            className="select-field"
           >
             <option value="professional">Professional</option>
             <option value="casual">Casual</option>
@@ -107,7 +112,7 @@ export default function BusinessProfileForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="save-button"
+          className="btn btn-primary"
         >
           {isLoading ? 'Saving...' : 'Save Profile'}
         </button>
@@ -119,12 +124,12 @@ export default function BusinessProfileForm() {
         )}
 
         {profile && (
-          <div className="profile-display">
-            <h3>Business Profile</h3>
-            <p>Business Name: {profile.business_name}</p>
-            <p>Description: {profile.description}</p>
-            <p>Website: {profile.website}</p>
-            <p>Tone: {profile.tone}</p>
+          <div className="profile-display card">
+            <h3>Saved Business Profile</h3>
+            <p><strong>Business Name:</strong> {profile.business_name}</p>
+            <p><strong>Description:</strong> {profile.description}</p>
+            <p><strong>Website:</strong> {profile.website}</p>
+            <p><strong>Tone:</strong> {profile.tone}</p>
           </div>
         )}
       </form>

@@ -11,10 +11,7 @@ export function Layout() {
                     <SignedIn>
                         
                         <Link to="/Home">HOME</Link>
-
-                                     
-                        <Link to="/Business ">BUSINESS</Link>
-                        
+ 
                         <UserButton/>
                     </SignedIn>
                 </nav>

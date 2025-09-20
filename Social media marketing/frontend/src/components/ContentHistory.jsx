@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useApi } from "../utils/api";
+import './SocialMediaManager.css';
 
-//Fetches the content history from the backend on mount and displays the history in a list.
- export default function ContentHistory() {
+// Fetches the content history from the backend on mount and displays the history in a list.
+export default function ContentHistory() {
   const { makeRequest } = useApi();
   const [history, setHistory] = useState([]);
 
@@ -19,21 +20,23 @@ import { useApi } from "../utils/api";
   }, []);
 
   return (
-    <div>
-      <h3>Content History</h3>
+    <div className="component-container">
+      <h2>Content History</h2>
       {history.length === 0 ? (
-        <p>No content history yet.</p>
+        <p className="empty-state">No content history yet.</p>
       ) : (
-        <ul>
+        <div className="history-list">
           {history.map((post) => (
-            <li key={post.id}>
-              <p>{post.generated_content}</p>
-              <p>Status: {post.status}</p>
-              <p>Platform: {post.platform}</p>
-              <p>Posted at: {new Date(post.created_at).toLocaleString()}</p>
-            </li>
+            <div key={post.id} className="history-item card">
+              <p className="content-text">{post.generated_content}</p>
+              <div className="post-meta">
+                <span className={`status status-${post.status.toLowerCase()}`}>{post.status}</span>
+                <span className="platform">{post.platform}</span>
+                <span className="date">{new Date(post.posted_to_x).toLocaleString()}</span>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

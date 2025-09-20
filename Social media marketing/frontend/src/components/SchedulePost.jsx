@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useApi } from "../utils/api";
-
+import './SocialMediaManager.css';
 
 export default function SchedulePost() {
   const { makeRequest } = useApi();
@@ -35,36 +35,52 @@ export default function SchedulePost() {
         platform: "X", // default is X 
       };
       
-      const response = await makeRequest("schedule-post", {
+      await makeRequest("schedule-post", {
         method: "POST",
         body: JSON.stringify(data),
       });
 
-      setStatus(`Scheduled Successfully!! check pending posts for details`);
-      console.log("Content scheduled:", response);
+      setStatus("Scheduled Successfully!! Check pending posts for details");
     } catch (error) {
       console.error("Error scheduling content:", error);
       setStatus(`Error: ${error.message}`);
-      
     }
   };
 
   return (
-    <div>
-      <h4>Schedule a Post</h4>
+    <div className="component-container">
+      <h2>Schedule Post</h2>
+      
       {generatedContent && (
-        <form onSubmit={handleSchedulePost}>
-          <p><strong>Generated Caption:</strong> {generatedContent.content.caption}</p>
-          <input
-            type="datetime-local"
-            value={scheduledTime}
-            onChange={(e) => setScheduledTime(e.target.value)}
-            required
-          />
-          <button type="submit">Schedule Post</button>
-        </form>
+        <div className="form">
+          <div className="generated-content card">
+            <h3>Generated Content</h3>
+            <p>{generatedContent.content.caption}</p>
+          </div>
+
+          <form onSubmit={handleSchedulePost} className="schedule-form">
+            <div className="form-group">
+              <label htmlFor="scheduled-time">Schedule Time:</label>
+              <input
+                id="scheduled-time"
+                type="datetime-local"
+                value={scheduledTime}
+                onChange={(e) => setScheduledTime(e.target.value)}
+                required
+                className="input-field"
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary">Schedule Post</button>
+          </form>
+
+          {status && (
+            <div className={`status-message ${status.includes("Error") ? "error" : "success"}`}>
+              {status}
+            </div>
+          )}
+        </div>
       )}
-      {status && <p>{status}</p>}
     </div>
   );
 }

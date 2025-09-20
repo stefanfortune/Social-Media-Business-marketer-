@@ -19,7 +19,7 @@ export default function HomePage() {
         <section className="hero-section">
           <div className="container hero-container text-center">
             <h1 className="hero-title">
-              Automate Your Social Media Marketing
+              Automate Your Social Media Marketing with X(Twitter)
             </h1>
             <p className="hero-subtitle">
               AI-powered content creation and scheduling for businesses. Streamline your social presence with enterprise-grade tools.
@@ -50,7 +50,7 @@ export default function HomePage() {
                 <div className="feature-icon">📅</div>
                 <h3 className="feature-title">Smart Scheduling</h3>
                 <p className="feature-description">
-                  Automate posting to multiple platforms with intelligent timing.
+                  Automate posting to X(Twitter) with intelligent timing.
                 </p>
               </div>
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useApi } from "../utils/api";
+import './SocialMediaManager.css';
 
 /**
  * fetches and displays generated content from the API.
@@ -53,77 +54,68 @@ export default function PostContent() {
         phone_numbers: phoneList,
         content_id: generatedContent.content_id,
       };
-      console.log("data:", data);
-      try {
-        const response = await makeRequest("post-to-socials", {
-          method: "POST",
-          body: JSON.stringify(data),
-        });
-        console.log("response:", response);
-      } catch (error) {
-        console.error("API Error:", error);
-      }
+      
+      await makeRequest("post-to-socials", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
 
-      setStatus(`Posted Successfully!!`);
-      console.log("Content posted successfully:", response);
+      setStatus("Posted Successfully!!");
     } catch (error) {
       console.error("Error posting content:", error);
       setStatus(`Error: ${error.message}`);
-      
     }
   };
 
   return (
-    <div>
-      <h4>Post Generated Content</h4>
+    <div className="component-container">
+      <h2>Post Content</h2>
 
       {generatedContent && (
-        <div className="generated-content">
-          <p>
-            <strong>Generated content:</strong>{" "}
-            {generatedContent.content.caption}
-          </p>
+        <div className="form">
+          <div className="generated-content card">
+            <h3>Generated Content</h3>
+            <p>{generatedContent.content.caption}</p>
+          </div>
 
-          <form onSubmit={handlePostContent}>
-            {/* Platform selection */}
-            <label>
-              Select Platform:
+          <form onSubmit={handlePostContent} className="post-form">
+            <div className="form-group">
+              <label htmlFor="platform-select">Select Platform:</label>
               <select
+                id="platform-select"
                 value={platform}
                 onChange={(e) => setPlatform(e.target.value)}
+                className="select-field"
               >
                 <option value="X">X (Twitter)</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="both">Both Platforms</option>
+                {/* Add other platform options as needed */}
               </select>
-            </label>
+            </div>
 
             {/* Show phone input only if WhatsApp is selected */}
             {(platform === "whatsapp" || platform === "both") && (
-              <div className="whatsapp-form">
-                <h3>WhatsApp Recipients</h3>
+              <div className="form-group">
+                <label htmlFor="phone-numbers">WhatsApp Recipients (comma separated)</label>
                 <input
+                  id="phone-numbers"
                   type="text"
                   placeholder="Recipient phones (comma separated)"
                   value={phones}
                   onChange={(e) => setPhones(e.target.value)}
                   required
-                  style={{
-                    width: "100%",
-                    height: "40px",
-                    padding: "10px",
-                    border: "1px solid #0f521aff",
-                    borderRadius: "5px",
-                    fontSize: "16px",
-                  }}
+                  className="input-field"
                 />
               </div>
             )}
 
-            <button type="submit">Post Content</button>
+            <button type="submit" className="btn btn-primary">Post Content</button>
           </form>
 
-          {status && <p>{status}</p>}
+          {status && (
+            <div className={`status-message ${status.includes("Error") ? "error" : "success"}`}>
+              {status}
+            </div>
+          )}
         </div>
       )}
     </div>

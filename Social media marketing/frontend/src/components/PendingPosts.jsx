@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useApi } from "../utils/api";
+import './SocialMediaManager.css';
 
 // Displays a list of scheduled posts from the backend
 export default function PendingPosts() {
@@ -7,8 +8,8 @@ export default function PendingPosts() {
   const [scheduledPosts, setScheduledPosts] = useState([]);
 
   useEffect(() => {
-//Fetches the scheduled posts from the backend and updates the state.
-  const fetchScheduledPosts = async () => {
+    // Fetches the scheduled posts from the backend and updates the state.
+    const fetchScheduledPosts = async () => {
       try {
         const data = await makeRequest("scheduled-posts");
         setScheduledPosts(data);
@@ -20,21 +21,23 @@ export default function PendingPosts() {
   }, []);
 
   return (
-    <div>
-      <h3>Scheduled Posts (Pending)</h3>
+    <div className="component-container">
+      <h2>Scheduled Posts</h2>
       {scheduledPosts.length === 0 ? (
-        <p>No scheduled posts yet.</p>
+        <p className="empty-state">No scheduled posts yet.</p>
       ) : (
-        <ul>
+        <div className="posts-list">
           {scheduledPosts.map((post) => (
-            <li key={post.id}>
-              <p><strong>Caption:</strong> {post.generated_content}</p>
-              <p><strong>Platform:</strong> {post.platform}</p>
-              <p><strong>Status:</strong> {post.status}</p>
-              <p><strong>Scheduled Time:</strong> {new Date(post.scheduled_time).toLocaleString()}</p>
-            </li>
+            <div key={post.id} className="post-item card">
+              <p className="content-text">{post.generated_content}</p>
+              <div className="post-meta">
+                <span className="platform">{post.platform}</span>
+                <span className={`status status-${post.status.toLowerCase()}`}>{post.status}</span>
+                <span className="date">Scheduled: {new Date(post.scheduled_time).toLocaleString()}</span> 
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

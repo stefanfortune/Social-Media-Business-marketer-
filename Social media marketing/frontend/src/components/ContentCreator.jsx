@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useApi } from '../utils/api';
+import './SocialMediaManager.css';
 
 export default function ContentCreator() {
   const { generateCaption } = useApi();
-  const [content, setContent] = useState({ raw_text: '', media: null });
+  const [content, setContent] = useState({ raw_text: '', media: null, tone: 'professional' });
   const [generatedCaption, setGeneratedCaption] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   // State to store user input, generated caption and loading status
@@ -17,6 +18,7 @@ export default function ContentCreator() {
       if (content.media) {
         formData.append('media', content.media); // actual File object
       }
+      formData.append('tone', content.tone);
       // Send FormData to backend
       const response = await generateCaption(formData);
       // Save results in state
@@ -35,39 +37,57 @@ export default function ContentCreator() {
   };
 
   return (
-    <div className="content-creator">
-      <textarea
-        rows={10}
-        cols={50}
-        placeholder="What's your post about?"
-        value={content.raw_text}
-        onChange={(e) => setContent({ ...content, raw_text: e.target.value })}
-      />
-      <input
-        type="file"
-        onChange={(e) =>
-          setContent({ ...content, media: e.target.files[0] })
-        }
-      />
-      <select
-        value={content.tone}
-        onChange={(e) => setContent({ ...content, tone: e.target.value })}
-      >
-        <option value="professional">Professional</option>
-        <option value="casual">Casual</option>
-        <option value="humorous">Humorous</option>
-      </select>
-
-      <button onClick={handlegenerateCaption} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Caption'}
-      </button>
-
-      {generatedCaption && (
-        <div className="generated-caption">
-          <h4>AI-Generated Caption</h4>
-          <p><strong>Caption:</strong> {generatedCaption.caption}</p>
+    <div className="component-container">
+      <h2>Content Creator</h2>
+      
+      <div className="form">
+        <div className="form-group">
+          <textarea
+            rows={6}
+            placeholder="What's your post about?"
+            value={content.raw_text}
+            onChange={(e) => setContent({ ...content, raw_text: e.target.value })}
+            className="textarea-field"
+          />
         </div>
-      )}
+
+        <div className="form-group">
+          <label htmlFor="media-upload">Upload Media (Optional)</label>
+          <input
+            id="media-upload"
+            type="file"
+            onChange={(e) =>
+              setContent({ ...content, media: e.target.files[0] })
+            }
+            className="input-field"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="tone-select">Select Tone</label>
+          <select
+            id="tone-select"
+            value={content.tone}
+            onChange={(e) => setContent({ ...content, tone: e.target.value })}
+            className="select-field"
+          >
+            <option value="professional">Professional</option>
+            <option value="casual">Casual</option>
+            <option value="humorous">Humorous</option>
+          </select>
+        </div>
+
+        <button onClick={handlegenerateCaption} disabled={isLoading} className="btn btn-primary">
+          {isLoading ? 'Generating...' : 'Generate Caption'}
+        </button>
+
+        {generatedCaption && (
+          <div className="generated-caption card">
+            <h3>AI-Generated Caption</h3>
+            <p>{generatedCaption.caption}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

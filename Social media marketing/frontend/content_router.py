@@ -9,7 +9,7 @@ from ..database.db import (create_content,
                            get_user_posts
                         )
 from ..authentication import authenticate_and_get_user_details
-from ..caption_curator import curated_caption
+from ..caption_curator import curate_caption
 from ..schemas import BusinessProfileCreate,ScheduleRequest,PostNow
 from ..scheduler import schedule_post_job 
 from ..database.models import Post, Content, get_db
@@ -119,9 +119,9 @@ async def generate_content(request_obj: Request,
             raise HTTPException(status_code=400, detail="business profile does not exist, please create one first")
     
         # Generate the caption    
-        generated_caption = curated_caption(
+        generated_caption = curate_caption(
             business_name=business_profile.business_name,
-            business_description=business_profile.descriptions,  
+            business_description=business_profile.description,  
             raw_text=raw_text,                                           
             tone=business_profile.tone,
             )
@@ -137,11 +137,11 @@ async def generate_content(request_obj: Request,
             with open(file_location, "wb") as f:                      # opens the file in write-binary mode ("wb")
                 f.write(await media.read())                           # writes the contents of the file to disk
                 media_path = file_location                            # stores the file path string (for DB or response)
-        now = datetime.now(timezone.utc)
+        local_time = datetime.now().astimezone()
         new_content = create_content(db=db, user_id=user_id,
                                      raw_text=raw_text,
                                      media_path=media_path,
-                                     created_at=now,
+                                     created_at=local_time,
                                      is_curated=True,
                                      generated_content=json.dumps({"caption": generated_caption, "media_path": media_path})
                                      )
@@ -238,14 +238,14 @@ async def post_content_to_socials(request: PostNow, request_obj: Request, db: Se
         message = content_data.get("caption", "")
         media_path = content.media_path
 
-        now = datetime.now(timezone.utc)
+        local_time = datetime.now().astimezone()
         new_post = create_post(
             db=db,
             user_id=user_id,
             content_id=content.id,
             generated_content=message,
             media_path=media_path,
-            scheduled_time=now,
+            scheduled_time=local_time,
             platform=request.platform,
             status="pending"
         )
@@ -270,16 +270,19 @@ async def post_content_to_socials(request: PostNow, request_obj: Request, db: Se
 def post_to_x(post, db: Session):
     try:
         # Initialize Twitter service
-        twitter_services = TwitterX()
+        twitter_service = TwitterX()
         # Post the content to Twitter (X)
-        success = twitter_services.post_tweet(post.generated_content, post.media_path)
+        success = twitter_service.post_tweet(post.generated_content, post.media_path)
+        local_time = datetime.now().astimezone()
 
         # Update post status
         if success:
             post.status = "posted"
+            post.posted_to_x = local_time
+            
         else:
             post.status = "failed"
-
+            post.posted_to_x = local_time
         db.commit()
         return success
     except Exception as e:
